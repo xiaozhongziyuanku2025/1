@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MD21点读笔破解与软件安装教程</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        /* IP限制弹窗样式 */
+        .ip-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal-content h2 {
+            color: #e74c3c;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .modal-content p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        
+        .ip-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            border: 1px dashed #ccc;
+        }
+        
+        .accept-btn {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 10px;
+        }
+        
+        .accept-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .access-expired {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .access-expired h2 {
+            color: #e74c3c;
+            margin-bottom: 20px;
+        }
+        
+        .access-expired p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            max-width: 600px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+        }
+        
+        .warning {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .warning h3 {
+            color: #856404;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .warning h3 i {
+            font-size: 1.5rem;
+        }
+        
+        .steps {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+        
+        .step {
+            display: flex;
+            margin-bottom: 35px;
+            padding-bottom: 30px;
+            border-bottom: 1px dashed #eaeaea;
+            position: relative;
+        }
+        
+        .step:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .step-number {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+            margin-right: 25px;
+            flex-shrink: 0;
+            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.3);
+        }
+        
+        .step-content h3 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-size: 1.4rem;
+        }
+        
+        .step-content p {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .password-box {
+            background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .password {
+            font-size: 2rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .password-note {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-top: 10px;
+        }
+        
+        .code-block {
+            background-color: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            overflow-x: auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .note {
+            background-color: #e8f4fd;
+            border-left: 5px solid #2196F3;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 10px 10px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .tip {
+            background-color: #e7f9ed;
+            border-left: 5px solid #4CAF50;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 10px 10px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .tip i {
+            color: #4CAF50;
+            font-size: 1.5rem;
+            margin-top: 3px;
+        }
+        
+        .note i {
+            color: #2196F3;
+            font-size: 1.5rem;
+            margin-top: 3px;
+        }
+        
+        .materials {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+        
+        .materials h2 {
+            margin-bottom: 25px;
+            color: #2c3e50;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .materials h2 i {
+            color: #6a11cb;
+        }
+        
+        .materials ul {
+            list-style-type: none;
+        }
+        
+        .materials li {
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            font-size: 1.1rem;
+        }
+        
+        .materials li:last-child {
+            border-bottom: none;
+        }
+        
+        .materials li:before {
+            content: "•";
+            color: #6a11cb;
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-right: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .device-image {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .device-image img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-size: 0.95rem;
+            border-top: 1px solid #eaeaea;
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 40px 0 20px;
+            color: #2c3e50;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eaeaea;
+        }
+        
+        .section-title i {
+            color: #6a11cb;
+            font-size: 1.8rem;
+        }
+        
+        .access-info {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .access-info div {
+            margin: 5px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .step {
+                flex-direction: column;
+            }
+            
+            .step-number {
+                margin-bottom: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .password {
+                font-size: 1.5rem;
+            }
+            
+            .access-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- IP限制弹窗 -->
+    <div class="ip-modal" id="ipModal">
+        <div class="modal-content">
+            <h2><i class="fas fa-exclamation-triangle"></i> 访问限制声明</h2>
+            <p>您正在访问受限制内容。您的IP地址将被记录，并且只能访问此页面24小时。</p>
+            <div class="ip-display" id="ipDisplay">正在获取您的IP地址...</div>
+            <p>点击"同意并继续"即表示您理解并接受此访问限制。</p>
+            <button class="accept-btn" id="acceptBtn">同意并继续</button>
+        </div>
+    </div>
+    
+    <!-- 访问过期提示 -->
+    <div class="access-expired" id="accessExpired">
+        <h2><i class="fas fa-ban"></i> 访问已过期</h2>
+        <p>您的24小时访问权限已到期。如需继续访问，请清除浏览器缓存或联系管理员。</p>
+        <p>您的IP地址: <span id="expiredIp"></span></p>
+    </div>
+    
+    <!-- 主要内容 -->
+    <div class="container" id="mainContent" style="display: none;">
+        <header>
+            <h1>MD21点读笔破解与软件安装教程</h1>
+            <p class="subtitle">解锁完整Android功能，安装第三方软件，实现更多功能</p>
+        </header>
+        
+        <div class="access-info">
+            <div><strong>您的IP:</strong> <span id="userIp"></span></div>
+            <div><strong>访问到期时间:</strong> <span id="accessExpiry"></span></div>
+        </div>
+        
+        <div class="warning">
+            <h3><i class="fas fa-exclamation-triangle"></i> 重要声明</h3>
+            <p>本教程仅供学习和研究目的使用。破解设备可能违反制造商的服务条款，并可能导致设备失去保修资格。请谨慎操作，作者不对任何因使用本教程造成的设备损坏或法律问题负责。</p>
+        </div>
+        
+        <section class="materials">
+            <h2><i class="fas fa-tools"></i> 所需条件</h2>
+            <ul>
+                <li>点读笔MD21设备（电量充足）</li>
+                <li>Micro SD卡（已下载好需要安装的软件）</li>
+                <li>SD卡读卡器（用于电脑传输文件）</li>
+                <li>Micro USB数据线（用于USB模式）</li>
+                <li>记住以下密码</li>
+            </ul>
+            
+            <div class="password-box">
+                <h3>开发者模式密码</h3>
+                <div class="password">jxw@2024</div>
+                <p class="password-note">如果上述密码无效，请尝试：jxw@2025</p>
+            </div>
+        </section>
+        
+        <h2 class="section-title"><i class="fas fa-key"></i> 第一部分：进入原生安卓系统</h2>
+        
+        <section class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>进入关于设备页面</h3>
+                    <p>在点读笔MD21的设置菜单中，找到"关于设备"或"系统信息"选项并点击进入。</p>
+                    <div class="note">
+                        <i class="fas fa-info-circle"></i>
+                        <div>
+                            <strong>提示：</strong> 不同版本的MD21可能略有不同，但基本路径相似。
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>找到序列号(SN)条目</h3>
+                    <p>在关于设备页面中，找到"序列号"或"SN"这一条目。</p>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>触发开发者选项</h3>
+                    <p>连续点击"序列号(SN)"条目<strong>三次</strong>，然后点击一次"版本号"条目。</p>
+                    <div class="note">
+                        <i class="fas fa-lightbulb"></i>
+                        <div>
+                            <strong>注意：</strong> 这个操作顺序很重要 - 先点三下SN，再点一下版本号。
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>输入密码</h3>
+                    <p>此时会弹出密码输入框，请输入以下密码：</p>
+                    <div class="password-box">
+                        <div class="password">jxw@2024</div>
+                        <p class="password-note">如果提示密码错误，请尝试：jxw@2025</p>
+                    </div>
+                    <p>输入正确密码后，系统将进入原生安卓模式。</p>
+                </div>
+            </div>
+        </section>
+        
+        <h2 class="section-title"><i class="fas fa-download"></i> 第二部分：安装第三方软件</h2>
+        
+        <section class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>准备SD卡</h3>
+                    <p>将Micro SD卡插入电脑，下载需要安装的APK文件到SD卡中。</p>
+                    <div class="tip">
+                        <i class="fas fa-lightbulb"></i>
+                        <div>
+                            <strong>推荐软件：</strong> 浏览器、计算器、小游戏、文件管理器等轻量级应用。
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>插入SD卡到点读笔</h3>
+                    <p>将已准备好软件的SD卡插入点读笔的SD卡槽中。</p>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>进入文件管理器</h3>
+                    <p>在设置中找到"文件管理"或"文件管理器"应用并打开。</p>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>安装软件</h3>
+                    <p>在文件管理器中找到SD卡中的APK文件，点击安装。</p>
+                    <div class="note">
+                        <i class="fas fa-info-circle"></i>
+                        <div>
+                            <strong>注意：</strong> 首次安装可能需要开启"允许安装未知来源应用"的权限。
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                    <h3>享受新功能</h3>
+                    <p>安装完成后，您就可以使用新软件搜索答案、玩游戏、浏览网页，实现更多功能！</p>
+                </div>
+            </div>
+        </section>
+        
+        <h2 class="section-title"><i class="fas fa-usb"></i> 第三部分：USB模式安装软件</h2>
+        
+        <section class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>开启开发者模式</h3>
+                    <p>按照第一部分的步骤进入原生安卓系统。</p>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>启用USB调试</h3>
+                    <p>在开发者选项中，找到"USB调试"并开启。</p>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>连接电脑</h3>
+                    <p>使用Micro USB数据线将点读笔连接到电脑。</p>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>传输文件</h3>
+                    <p>在电脑上直接将APK文件拖拽到点读笔存储中，然后在点读笔上安装。</p>
+                </div>
+            </div>
+        </section>
+        
+        <h2 class="section-title"><i class="fas fa-gamepad"></i> 第四部分：安卓彩蛋小游戏</h2>
+        
+        <section class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>进入关于手机</h3>
+                    <p>在设置中找到"关于手机"或"关于设备"。</p>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>找到安卓版本</h3>
+                    <p>在关于手机页面中找到"Android版本"条目。</p>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>触发彩蛋</h3>
+                    <p>连续点击"Android版本"条目<strong>三次</strong>，即可激活安卓彩蛋小游戏！</p>
+                    <div class="tip">
+                        <i class="fas fa-lightbulb"></i>
+                        <div>
+                            <strong>提示：</strong> 不同Android版本有不同的彩蛋游戏，快去探索吧！
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="device-image">
+            <div style="background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); height: 200px; display: flex; align-items: center; justify-content: center; border-radius: 10px; color: white; flex-direction: column;">
+                <i class="fas fa-tablet-alt" style="font-size: 5rem;"></i>
+                <p style="margin-top: 15px;">MD21点读笔示意图</p>
+            </div>
+        </div>
+        
+        <footer>
+            <p>本教程仅供参考，使用风险自负 | MD21点读笔破解与软件安装教程</p>
+            <p>© 2024 技术教程分享</p>
+        </footer>
+    </div>
+
+    <script>
+        // 模拟获取IP地址（实际应用中需要服务器端支持）
+        function getUserIP() {
+            // 这里只是模拟，实际应用中需要通过服务器获取真实IP
+            return "192.168." + Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255);
+        }
+        
+        // 检查访问权限
+        function checkAccess() {
+            const userIP = getUserIP();
+            const storedIP = localStorage.getItem('accessIP');
+            const accessTime = localStorage.getItem('accessTime');
+            const now = new Date().getTime();
+            
+            // 显示用户IP
+            document.getElementById('ipDisplay').textContent = userIP;
+            document.getElementById('userIp').textContent = userIP;
+            document.getElementById('expiredIp').textContent = userIP;
+            
+            // 检查是否有存储的访问记录
+            if (storedIP && accessTime) {
+                // 检查IP是否匹配且访问时间是否在24小时内
+                if (storedIP === userIP && (now - parseInt(accessTime)) < 24 * 60 * 60 * 1000) {
+                    // 仍在访问期内
+                    const expiryTime = new Date(parseInt(accessTime) + 24 * 60 * 60 * 1000);
+                    document.getElementById('accessExpiry').textContent = expiryTime.toLocaleString();
+                    document.getElementById('ipModal').style.display = 'none';
+                    document.getElementById('mainContent').style.display = 'block';
+                } else {
+                    // 访问已过期
+                    document.getElementById('ipModal').style.display = 'none';
+                    document.getElementById('accessExpired').style.display = 'flex';
+                }
+            } else {
+                // 首次访问，显示IP限制声明
+                document.getElementById('ipModal').style.display = 'flex';
+            }
+        }
+        
+        // 同意访问限制
+        document.getElementById('acceptBtn').addEventListener('click', function() {
+            const userIP = getUserIP();
+            const now = new Date().getTime();
+            
+            // 存储访问信息
+            localStorage.setItem('accessIP', userIP);
+            localStorage.setItem('accessTime', now.toString());
+            
+            // 计算并显示到期时间
+            const expiryTime = new Date(now + 24 * 60 * 60 * 1000);
+            document.getElementById('accessExpiry').textContent = expiryTime.toLocaleString();
+            
+            // 隐藏弹窗，显示内容
+            document.getElementById('ipModal').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+        });
+        
+        // 页面加载时检查访问权限
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAccess();
+            
+            // 添加简单的交互效果
+            const steps = document.querySelectorAll('.step');
+            
+            steps.forEach((step, index) => {
+                // 添加延迟显示动画
+                step.style.opacity = '0';
+                step.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    step.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    step.style.opacity = '1';
+                    step.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+            
+            // 密码框点击效果
+            const passwordBoxes = document.querySelectorAll('.password-box');
+            passwordBoxes.forEach(box => {
+                box.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.98)';
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 150);
+                });
+            });
+            
+            // 章节标题动画
+            const sectionTitles = document.querySelectorAll('.section-title');
+            sectionTitles.forEach((title, index) => {
+                title.style.opacity = '0';
+                title.style.transform = 'translateX(-20px)';
+                
+                setTimeout(() => {
+                    title.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    title.style.opacity = '1';
+                    title.style.transform = 'translateX(0)';
+                }, 800 + index * 300);
+            });
+        });
+    </script>
+</body>
+</html>
